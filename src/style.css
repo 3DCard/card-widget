@@ -221,18 +221,36 @@ html, body {
 }
 
 @media (max-width: 640px) {
+  /* Below this width the viewer and controls stack instead of sitting
+     side by side. The desktop layout locks everything to exactly one
+     viewport height with the controls panel scrolling internally - fine
+     when the panel is a narrow sidebar, but on a phone (or a short
+     Squarespace embed) that meant the color panel was capped at an
+     arbitrary height and forced into its own inner scrollbar even when
+     there was plenty of room below it. Here the panel instead grows to
+     fit all its content, and the page itself scrolls - so it expands to
+     use whatever space is actually available instead of clipping. */
+  html, body {
+    height: auto;
+    overflow: visible;
+  }
+
   #app {
+    height: auto;
+    min-height: 100vh;
     flex-direction: column;
   }
 
   #viewer-container {
-    flex: 1 1 auto;
-    min-height: 0;
+    flex: 0 0 auto;
+    height: 50vh;
+    min-height: 280px;
   }
 
   #controls-panel {
     flex: 0 0 auto;
-    max-height: 42vh;
+    max-height: none;
+    overflow: visible;
     border-left: none;
     border-top: 1px solid var(--border);
     flex-direction: row;
