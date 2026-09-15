@@ -242,9 +242,14 @@ html, body {
   }
 
   #viewer-container {
+    /* A fixed pixel height rather than a vh-based one - vh is relative to
+       the iframe's own height in Squarespace, which creates a circular
+       dependency (the "right" iframe height depends on the content's
+       height, which depended on the iframe's height). Fixed content height
+       instead, so there's one true number to plug into the Squarespace
+       embed's height field - see README for the current total. */
     flex: 0 0 auto;
-    height: 50vh;
-    min-height: 280px;
+    height: 340px;
   }
 
   #controls-panel {

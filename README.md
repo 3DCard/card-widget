@@ -103,8 +103,16 @@ for the logo), edit `PART_PALETTE_OVERRIDES` in [src/colorPicker.js](src/colorPi
    ></iframe>
    ```
 
-3. Adjust the `height` to taste. The widget layout already adapts to narrow
-   iframe widths (controls move below the viewer under ~640px).
+3. Adjust the `height` to taste:
+   - **≥640px wide** (desktop-ish): the viewer and controls sit side by
+     side and share the iframe's height, so pick whatever height looks
+     good - the controls panel scrolls internally if it doesn't fit.
+   - **<640px wide** (mobile, or a narrow Squarespace column): the controls
+     move below the viewer and the panel expands to its full natural
+     height instead of scrolling internally, so the page needs to actually
+     be that tall to avoid clipping. The current 18-color palette needs
+     about **700px** total at this width - use `height: 700px` (or taller,
+     for a margin of safety) for sections that render narrow.
 
 The selected shape and colors are also encoded into the URL
 (`?shape=...&colors=...`), so the "Copy shareable link" button lets a
