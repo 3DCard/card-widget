@@ -126,6 +126,7 @@ html, body {
 }
 
 .swatch {
+  position: relative;
   width: var(--swatch-size);
   height: var(--swatch-size);
   border-radius: 50%;
@@ -138,6 +139,53 @@ html, body {
 
 .swatch:hover {
   transform: scale(1.08);
+}
+
+/* Single shared tooltip (src/colorPicker.js positions it with fixed
+   coordinates per-swatch on hover/focus - see showTooltip). Fixed rather
+   than anchored inside the swatch so it can't be clipped by the scrollable
+   #controls-panel, and so it can flip below + clamp horizontally near the
+   panel's edges. */
+.swatch-tooltip {
+  position: fixed;
+  background: var(--text);
+  color: var(--panel-bg);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  padding: 5px 8px;
+  border-radius: 6px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s ease;
+  z-index: 10;
+}
+
+.swatch-tooltip::after {
+  content: "";
+  position: absolute;
+  left: var(--arrow-offset, 50%);
+  transform: translateX(-50%);
+  border: 4px solid transparent;
+}
+
+/* Default: tooltip above the swatch, arrow points down from its bottom. */
+.swatch-tooltip::after {
+  top: 100%;
+  border-top-color: var(--text);
+}
+
+/* Flipped: tooltip below the swatch, arrow points up from its top. */
+.swatch-tooltip.arrow-below::after {
+  top: auto;
+  bottom: 100%;
+  border-top-color: transparent;
+  border-bottom-color: var(--text);
+}
+
+.swatch-tooltip.visible {
+  opacity: 1;
 }
 
 .swatch.selected {
