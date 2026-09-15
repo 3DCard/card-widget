@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>3D Card Color Customizer</title>
+  <link rel="stylesheet" href="src/style.css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="app">
+    <div id="viewer-container">
+      <canvas id="viewer-canvas"></canvas>
+      <div id="viewer-overlay">
+        <div id="viewer-hint">Drag to rotate &middot; scroll to zoom</div>
+        <div id="view-presets">
+          <button type="button" data-view="start" title="Default angle" aria-label="Default angle">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 8.5 L14 5.5 L20 9.5 L10 13.5 Z" />
+            </svg>
+          </button>
+          <button type="button" data-view="squared" title="Squared up" aria-label="Squared up">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+              <rect x="6" y="4" width="12" height="16" rx="1.5" />
+            </svg>
+          </button>
+          <button type="button" data-view="back" title="Show back" aria-label="Show back">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M17 2.1 L21 6.1 L17 10.1 M21 6.1 H10 A5 5 0 0 0 6 14" />
+              <path d="M7 21.9 L3 17.9 L7 13.9 M3 17.9 H14 A5 5 0 0 0 18 10" />
+            </svg>
+          </button>
+          <button type="button" data-view="zoom" title="Zoomed in" aria-label="Zoomed in">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+              <circle cx="10.5" cy="10.5" r="6.5" />
+              <path d="M15.5 15.5 L21 21" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="controls-panel">
+      <div class="part-group">
+        <h3>Shape</h3>
+        <select id="shape-select"></select>
+      </div>
+      <div id="part-list"></div>
+      <button id="share-btn" type="button">Copy shareable link</button>
+    </div>
+  </div>
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
