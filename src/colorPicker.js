@@ -30,6 +30,22 @@ function paletteFor(partName) {
   return key ? PART_PALETTE_OVERRIDES[key] : DEFAULT_PALETTE;
 }
 
+// The starting color shown before a visitor picks anything - matched by
+// substring like PART_PALETTE_OVERRIDES above. Without this every part
+// would default to the first palette color (black), so a visitor's very
+// first view would be an all-black card.
+const DEFAULT_COLOR_OVERRIDES = {
+  accent: "#F3F3F1", // white
+  body: "#070707", // black
+};
+
+function defaultColorFor(partName) {
+  const key = Object.keys(DEFAULT_COLOR_OVERRIDES).find((k) =>
+    partName.toLowerCase().includes(k.toLowerCase())
+  );
+  return key ? DEFAULT_COLOR_OVERRIDES[key] : DEFAULT_PALETTE[0];
+}
+
 function prettyName(name) {
   return name
     .replace(/[_-]+/g, " ")
@@ -52,7 +68,7 @@ export function renderColorPicker(container, parts, { initialColors = {}, onChan
 
   parts.forEach((part) => {
     const palette = paletteFor(part.name);
-    const startColor = initialColors[part.name] || palette[0];
+    const startColor = initialColors[part.name] || defaultColorFor(part.name);
 
     part.meshes.forEach((mesh) => mesh.material.color.set(startColor));
     selection[part.name] = startColor;
