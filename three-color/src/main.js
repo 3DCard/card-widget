@@ -3,6 +3,14 @@ import { renderColorPicker } from "../../src/colorPicker.js";
 import { SHAPES, DEFAULT_SHAPE_ID } from "./shapes.js";
 import { readState, writeState } from "../../src/urlState.js";
 
+// The model's mesh order (Contact, Brand, Body) doesn't match the display
+// order we want - sort by this list instead of relying on export order.
+const PART_ORDER = ["Body", "Brand", "Contact"];
+
+function orderParts(parts) {
+  return [...parts].sort((a, b) => PART_ORDER.indexOf(a.name) - PART_ORDER.indexOf(b.name));
+}
+
 async function main() {
   const canvas = document.getElementById("viewer-canvas");
   const viewerContainer = document.getElementById("viewer-container");
@@ -26,7 +34,7 @@ async function main() {
 
   const viewer = await createViewer(canvas, viewerContainer, initialShape);
 
-  let currentColors = renderColorPicker(partList, viewer.parts, {
+  let currentColors = renderColorPicker(partList, orderParts(viewer.parts), {
     initialColors: urlColors,
     onChange: (_name, _hex, selection) => {
       currentColors = selection;
@@ -39,7 +47,7 @@ async function main() {
     const shape = SHAPES.find((s) => s.id === shapeSelect.value);
     const parts = await viewer.loadShape(shape);
 
-    currentColors = renderColorPicker(partList, parts, {
+    currentColors = renderColorPicker(partList, orderParts(parts), {
       initialColors: currentColors,
       onChange: (_name, _hex, selection) => {
         currentColors = selection;
