@@ -76,17 +76,45 @@ If a part is made of several separate bodies in CAD on purpose (e.g. one
 body per letter of the text, not merged into a single solid), you don't
 need to combine them — just give them the same base name. The widget groups
 any meshes whose names only differ by a trailing numeric suffix into one
-swatch row that recolors all of them together. Both of these patterns work:
+swatch row that recolors all of them together, e.g. `text_1`, `text_2`,
+`text_3`.
 
-- `text`, `text.001`, `text.002`, ... (what Blender auto-generates when you
-  duplicate/rename objects the same)
-- `text_1`, `text_2`, `text_3`, ...
-
-Whatever your tool auto-suffixes duplicate names with is fine, as long as
-it's a number after a `.`, `_`, or `-`.
+**Use an underscore or hyphen suffix (`text_1`), not a dot (`text.001`).**
+Blender auto-generates dot-suffixed names, but three.js's GLTF loader
+strips dots (along with a few other characters) from node/mesh names as
+part of its own internal sanitizing, so `text.001` actually arrives in the
+browser as `text001` — with nothing for the grouping regex to match, so it
+won't group. Rename to `text_001` (or run
+[scripts/rename_glb_meshes.py](scripts/rename_glb_meshes.py) with that
+naming) and it groups correctly.
 
 To customize which colors are offered per part (e.g. metallic finishes only
 for the logo), edit `PART_PALETTE_OVERRIDES` in [src/colorPicker.js](src/colorPicker.js).
+
+## The "3 Color" variant
+
+[three-color/](three-color/) is a second, separate build of the widget for
+a card design with exactly three colorable parts — **Body**, **Brand**
+(logo, fused with the whole back face on export), and **Contact** (name +
+contact info, grouped together). It's a standalone page meant for a
+*second* Squarespace embed alongside the main one, not a mode switch within
+the same page.
+
+It shares almost everything with the main app — same viewer, same color
+picker, same palette, same view presets — just pointed at its own
+[three-color/src/shapes.js](three-color/src/shapes.js) registry and
+`public/models/` files. Run it locally the same way, at
+`http://localhost:5173/three-color/`, and add shapes to it exactly like the
+main app (see "Adding your real models" above), except each GLB needs
+**4 meshes** named `Body`, `Brand`, `Contact`, and `Contact_001` (the
+trailing `_001` groups the name text in with the contact info — see
+"Multiple bodies that should color together" above for why it must be an
+underscore, not a dot).
+
+Deploy and embed it the same way as the main app (see below) — it's a
+separate URL (`.../three-color/`), so it needs its own `<iframe>` and its
+own height tuned to its content (it currently has the same three swatch
+rows the main app does, so the same height guidance applies).
 
 ## Deploying and embedding in Squarespace
 

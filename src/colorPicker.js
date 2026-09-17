@@ -1,99 +1,4 @@
-const DEFAULT_PALETTE = [
-  "#070707", // Black
-  "#F3F3F1", // White
-  "#6C7477", // Grey
-  "#626B76", // Dark Grey
-  "#AC0200", // Red
-  "#B7571F", // Burnt Orange
-  "#DC6E38", // Orange
-  "#5A3323", // Brown
-  "#B68C61", // Army Beige
-  "#A8A38D", // Flat Dark Earth
-  "#F0C940", // Yellow
-  "#697240", // Army Green
-  "#05AF47", // Green
-  "#5FCCB7", // Teal
-  "#0F5EA0", // Blue
-  "#7762E3", // Purple
-  "#FF469B", // Magenta
-  "#FFC4DD", // Pink
-];
-
-// Shown in the hover tooltip alongside the hex code. Keyed uppercase since
-// hex values are compared/displayed uppercase throughout this file.
-const COLOR_NAMES = {
-  "#070707": "Black",
-  "#F3F3F1": "White",
-  "#6C7477": "Grey",
-  "#626B76": "Dark Grey",
-  "#AC0200": "Red",
-  "#B7571F": "Burnt Orange",
-  "#DC6E38": "Orange",
-  "#5A3323": "Brown",
-  "#B68C61": "Army Beige",
-  "#A8A38D": "Flat Dark Earth",
-  "#F0C940": "Yellow",
-  "#697240": "Army Green",
-  "#05AF47": "Green",
-  "#5FCCB7": "Teal",
-  "#0F5EA0": "Blue",
-  "#7762E3": "Purple",
-  "#FF469B": "Magenta",
-  "#FFC4DD": "Pink",
-};
-
-function nameForHex(hex) {
-  return COLOR_NAMES[hex.toUpperCase()] ?? null;
-}
-
-// A single shared tooltip element, positioned with fixed coordinates on
-// hover/focus rather than living inside each swatch. The swatch grid sits
-// in a scrollable panel (#controls-panel), and an element positioned
-// relative to a swatch near the panel's edge would get silently clipped by
-// the panel's own overflow - fixed positioning (plus the clamping below)
-// keeps it fully on-screen regardless of which swatch it's for.
-let tooltipEl = null;
-
-function getTooltipEl() {
-  if (!tooltipEl) {
-    tooltipEl = document.createElement("div");
-    tooltipEl.className = "swatch-tooltip";
-    document.body.appendChild(tooltipEl);
-  }
-  return tooltipEl;
-}
-
-function showTooltip(anchorEl, text) {
-  const tooltip = getTooltipEl();
-  tooltip.textContent = text;
-  tooltip.style.visibility = "hidden";
-  tooltip.classList.add("visible");
-
-  const anchorRect = anchorEl.getBoundingClientRect();
-  const tooltipRect = tooltip.getBoundingClientRect();
-  const margin = 8;
-
-  let left = anchorRect.left + anchorRect.width / 2 - tooltipRect.width / 2;
-  left = Math.max(margin, Math.min(left, window.innerWidth - tooltipRect.width - margin));
-  let top = anchorRect.top - tooltipRect.height - margin;
-  let arrowBelow = false;
-  if (top < margin) {
-    // Not enough room above (e.g. swatch near the top of the viewport) -
-    // show the tooltip below the swatch instead.
-    top = anchorRect.bottom + margin;
-    arrowBelow = true;
-  }
-
-  tooltip.style.left = `${left}px`;
-  tooltip.style.top = `${top}px`;
-  tooltip.style.setProperty("--arrow-offset", `${anchorRect.left + anchorRect.width / 2 - left}px`);
-  tooltip.classList.toggle("arrow-below", arrowBelow);
-  tooltip.style.visibility = "visible";
-}
-
-function hideTooltip() {
-  tooltipEl?.classList.remove("visible");
-}
+import { DEFAULT_PALETTE, labelForHex, prettyName, showTooltip, hideTooltip } from "./palette.js";
 
 // Palettes can be overridden per part name (matched by substring, case-insensitive)
 // e.g. metallic finishes only for a "logo" part, matte plastics for the body.
@@ -113,6 +18,8 @@ function paletteFor(partName) {
 const DEFAULT_COLOR_OVERRIDES = {
   accent: "#F3F3F1", // white
   body: "#070707", // black
+  brand: "#F3F3F1", // white - 3-color variant's logo part
+  contact: "#F3F3F1", // white - 3-color variant's name/contact-info part
 };
 
 function defaultColorFor(partName) {
@@ -120,12 +27,6 @@ function defaultColorFor(partName) {
     partName.toLowerCase().includes(k.toLowerCase())
   );
   return key ? DEFAULT_COLOR_OVERRIDES[key] : DEFAULT_PALETTE[0];
-}
-
-function prettyName(name) {
-  return name
-    .replace(/[_-]+/g, " ")
-    .replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 /**
@@ -160,8 +61,7 @@ export function renderColorPicker(container, parts, { initialColors = {}, onChan
     row.className = "swatch-row";
 
     palette.forEach((hex) => {
-      const name = nameForHex(hex);
-      const label = name ? `${name} (${hex})` : hex;
+      const label = labelForHex(hex);
 
       const swatch = document.createElement("button");
       swatch.type = "button";
