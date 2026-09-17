@@ -18,7 +18,7 @@ function paletteFor(partName) {
 const DEFAULT_COLOR_OVERRIDES = {
   accent: "#F3F3F1", // white
   body: "#070707", // black
-  brand: "#F3F3F1", // white - 3-color variant's logo part
+  brand: "#DC6E38", // orange - 3-color variant's logo part
   contact: "#F3F3F1", // white - 3-color variant's name/contact-info part
 };
 
