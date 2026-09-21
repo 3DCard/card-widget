@@ -7,6 +7,8 @@ import * as THREE from "three";
  * shape uses the same part names a real export should use.
  */
 export function buildPlaceholderModel(shapeId = "classic") {
+  if (shapeId === "nfc-keychain") return buildKeychainPlaceholder();
+
   const group = new THREE.Group();
   group.name = `placeholder_${shapeId}`;
 
@@ -32,6 +34,50 @@ export function buildPlaceholderModel(shapeId = "classic") {
     letter.position.set(-6 + i * 16, 2.3, -14);
     group.add(letter);
   });
+
+  group.traverse((obj) => {
+    if (obj.isMesh) {
+      obj.castShadow = true;
+      obj.receiveShadow = true;
+    }
+  });
+
+  return group;
+}
+
+// Stand-in for the NFC keychain (nfc-keychain/): a rounded tag with a key
+// ring hole at the far end, plus a raised disc. Uses the two part names the
+// real export should have - "Body Color" and "Accent Color".
+function buildKeychainPlaceholder() {
+  const group = new THREE.Group();
+  group.name = "placeholder_nfc-keychain";
+
+  const thickness = 4;
+  const tag = roundedRectShape(46, 76, 12);
+  // Shape +y becomes -z after the rotation below, i.e. the far end of the
+  // tag from the default camera.
+  const hole = new THREE.Path();
+  hole.absarc(0, 28, 5.5, 0, Math.PI * 2, true);
+  tag.holes.push(hole);
+
+  const bodyGeo = new THREE.ExtrudeGeometry(tag, { depth: thickness, bevelEnabled: false });
+  bodyGeo.rotateX(-Math.PI / 2);
+  bodyGeo.translate(0, -thickness / 2, 0);
+  const body = new THREE.Mesh(
+    bodyGeo,
+    new THREE.MeshStandardMaterial({ color: "#070707", roughness: 0.55, metalness: 0.05 })
+  );
+  body.name = "Body Color";
+  group.add(body);
+
+  const accentGeo = new THREE.CylinderGeometry(14, 14, 1.6, 48);
+  const accent = new THREE.Mesh(
+    accentGeo,
+    new THREE.MeshStandardMaterial({ color: "#F3F3F1", roughness: 0.55, metalness: 0.05 })
+  );
+  accent.name = "Accent Color";
+  accent.position.set(0, thickness / 2 + 0.8, -6);
+  group.add(accent);
 
   group.traverse((obj) => {
     if (obj.isMesh) {

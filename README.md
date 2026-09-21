@@ -116,6 +116,23 @@ separate URL (`.../three-color/`), so it needs its own `<iframe>` and its
 own height tuned to its content (it currently has the same three swatch
 rows the main app does, so the same height guidance applies).
 
+## The NFC keychain variant
+
+[nfc-keychain/](nfc-keychain/) is a third standalone build, for the NFC
+keychain page. It has **one shape**, so there's no Shape dropdown, and it
+uses the same two-part format as the main widget: **Body Color** and
+**Accent Color**. Like the 3-color variant it reuses the shared viewer,
+color picker, palette and view presets, and needs its own embed.
+
+Run it locally at `http://localhost:5173/nfc-keychain/`.
+
+To add the real model, export a GLB with two meshes named `Body Color` and
+`Accent Color` and save it as `public/models/Keychain.glb` (or change
+the path in [nfc-keychain/src/shapes.js](nfc-keychain/src/shapes.js)). Until
+that file exists, the page shows a placeholder tag with the same two part
+names, so everything works end to end before the export is ready. The
+swatch defaults are black body / white accent, same as the main widget.
+
 ## Deploying and embedding in Squarespace
 
 1. Deploy this folder to a static host (Vercel, Netlify, Cloudflare Pages,
@@ -128,6 +145,21 @@ rows the main app does, so the same height guidance applies).
      style="width: 100%; height: 520px; border: 0;"
      loading="lazy"
      title="3D card color customizer"
+   ></iframe>
+   ```
+
+   The 3-color and NFC keychain variants each need their own Code Block
+   and `<iframe>`, pointing at their own URL (`.../three-color/` and
+   `.../nfc-keychain/`). The NFC keychain embed only has two swatch rows and
+   no shape picker, so it needs less height than the main widget - about
+   **640px** on narrow layouts (it measured ~620px at 375px wide):
+
+   ```html
+   <iframe
+     src="https://YOUR-DEPLOYED-URL/nfc-keychain/"
+     style="width: 100%; height: 640px; border: 0;"
+     loading="lazy"
+     title="NFC keychain color customizer"
    ></iframe>
    ```
 

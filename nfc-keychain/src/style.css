@@ -1,0 +1,3 @@
+/* Reuses the main widget's styles as-is - this variant only differs in
+   which model/parts it loads (see shapes.js) and having no shape picker. */
+@import url("../../src/style.css");
